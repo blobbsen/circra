@@ -49,9 +49,41 @@ class letter(object):
 	# calculates the same stuff a lot of time, but it works TO DO: make it better :)	
 	def createCandidates(self, alphabet):
 		for x in alphabet:
+			counter=0
+			z=0
 
-			for y in self.occurenceAtAll
-				if y=
+			for y in self.candidatsAtAll:
+				if y == x:
+					counter+=1
+				z+=1
+
+			z=0
+			for y in self.candidatsTwice: 
+				if y == x:
+					counter+=1
+				z+=1
+		
+			z=0
+			for y in self.candidatsAtStart:
+				if y == x:
+					counter+=1
+				z+=1
+		
+			z=0
+			for y in self.candidatsPerWord:
+				if y == x:
+					counter+=1
+				z+=1
+
+
+			if counter == 4:
+				self.candidats4Hits.append(x)
+			elif counter == 3:
+				self.candidats3Hits.append(x)
+			elif counter == 2:
+				self.candidats2Hits.append(x)
+			elif counter == 1:
+				self.candidats1Hit.append(x)
 
 
 ### functions ###
@@ -275,7 +307,7 @@ arrayOccurencePerWord=countLetterOccurencePerWord(textToDecryptBlanksSolved, alp
 letterList = setPhase2Occurences(letterList, arrayOccurenceAtStart, arrayOccurencePerWord)
 
 
-error = 1.5
+error = 1.0
 
 c=0
 for aa in letterList:
@@ -308,14 +340,79 @@ for aa in letterList:
 	c+=1
 
 
-for foo in letterList:
-	print foo.letter
-	print foo.occurenceAtAll, foo.occurenceTwice, foo.occurencePerWord, foo.occurenceAtStart
-	print foo.candidatsAtAll, foo.candidatsTwice, foo.candidatsPerWord, foo.candidatsAtStart
-	print "-----"
+#for foo in letterList:
+#	print foo.letter
+#	print foo.occurenceAtAll, foo.occurenceTwice, foo.occurencePerWord, foo.occurenceAtStart
+#	print foo.candidatsAtAll, foo.candidatsTwice, foo.candidatsPerWord, foo.candidatsAtStart
+#	print "-----"
 
 ## works pretty well!  now just a ranking of all candidats afterwards we will create the permutations, which will then bruteforced and wordlist
 # checked, if it hits anything the permutation a.k.a cipher will be printed after an example of the text.
+
+
+for x in letterList:
+	x.createCandidates(alphabet)
+
+#	print x.letter
+#	print x.candidats4Hits
+#	print x.candidats3Hits
+#	print x.candidats2Hits
+#	print x.candidats1Hit
+#	print "-----------"
+
+#buildPermutationsFor4Hits(letterList, alphabet)
+
+AllPermutations=[]
+	
+OnePermutation={'a':'','b':'','c':'','d':'','e':'','f':'','g':'','h':'','i':'',
+					'j':'','k':'','l':'','m':'','n':'','o':'','p':'','q':'','r':'',
+					's':'','t':'','u':'','v':'','w':'','x':'','y':'','z':'',' ':'',}
+
+tempPerm = OnePermutation.copy()
+#print tempPerm
+
+
+## first we put the stars in the permutation start, but only the once which occure once   ## here the q fucks up
+tempCheck=""
+gettingDoubles=""
+
+for a in letterList:
+	if len(a.candidats4Hits) == 1:# and a.candidats4Hits != :
+		if tempCheck.count(a.candidats4Hits[0]) == 0:
+			tempPerm[a.letter]=a.candidats4Hits[0]
+			tempCheck+=a.candidats4Hits[0]
+		else:
+			gettingDoubles+=a.candidats4Hits[0]
+			#print tempCheck.count(a.letter)
+			#print tempCheck
+
+for a in alphabet:
+	if gettingDoubles.count(a) > 0:
+		for b in alphabet:
+			if tempPerm.get(b) == a:
+				tempPerm[b] = ""
+
+#AllPermutations.append(tempPerm)
+#####################################################################
+
+# now the we iterate over the letters which have two letters at 4hits very unique!!!  ## here the c and m fuck shit up
+# and copy the tempPerm for each occurence
+for a in letterList:
+		if len(a.candidats4Hits) > 1:
+			print a.letter, a.candidats4Hits
+			x = tempPerm.copy()
+
+
+# genau jetzt die beiden varianten jeweils in den shit, und anschliessend ENDLICH rekursiv fur jeden noch leeren buchstaben,
+# wird dann geschaut wer in frage kommt, bei der zweiten stufe alle buchstaben, dann dritte, und dann vierte.
+# dadruch das wir das dann immer appenden, loschen wir am ende einfach alle nicht vollstandigen permutation aus dem array
+# und starten anschliessen die advanced brute-force attack. nach jeder attack wir in einem array gespeichert, wie viele
+# woerter aus der wordlist gefunden wurden und nachdem alle versuche durch sind, wird ausgedruckt. bzw, wenn wir drucken
+# jedes mal den text, wenn mehr worter gefunden werden an den user. so dass er den vorgang abbrechen kann.
+# deswegen werden die erfolgreichen cipher in eine textdatei abgelegt. mit dokumenten namen und cipher!
+
+#for a in letterList
+
 
 
 
