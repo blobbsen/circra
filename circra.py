@@ -261,8 +261,8 @@ alphabet.append(" ")
 
 
 ## let's start first we will parse the file and count occurenceAtAll and occurenceTwice
-textToDecrypt=parseTextFileToString("analyseEnglishPrepared.txt")
-#textToDecrypt=encryptTextRandomly(parseTextFileToString("analyseEnglishPrepared.txt"), alphabet)
+#textToDecrypt=parseTextFileToString("analyseEnglishPrepared.txt")
+textToDecrypt=encryptTextRandomly(parseTextFileToString("analyseEnglishPrepared.txt"), alphabet)
 
 # getting occurence phase 1
 occurenceAtAll=countLetterOccurenceAtAll(textToDecrypt ,alphabet)
@@ -301,15 +301,20 @@ blank = letter(" ",occurenceAtAll[26], occurenceTwice[26])
 letterList=[aL,bL,cL,dL,eL,fL,gL,hL,iL,jL,kL,lL,mL,nL,oL,pL,qL,rL,sL,tL,uL,vL,wL,xL,yL,zL,blank]
 
 # determine blank and setting it
-blank=searchBlank(letterList)
+blankSearch=searchBlank(letterList)
 
 for x in letterList:
-	if x.letter == blank:
+	if x.letter == blankSearch:
 		x.actualLetter = 1
 #### probably some checks here, cuz the "e" could fuck shit up.
 
 # create decrypted text with real blanks
-textToDecryptBlanksSolved=textToDecrypt.replace(blank," ")
+textToDecryptBlanksSolved=textToDecrypt.replace(blankSearch," ")
+
+## blank improven
+
+#print textToDecrypt
+print textToDecryptBlanksSolved
 
 arrayOccurenceAtStart=countLetterOccurenceAtStart(textToDecryptBlanksSolved, alphabet)
 arrayOccurencePerWord=countLetterOccurencePerWord(textToDecryptBlanksSolved, alphabet)
@@ -317,7 +322,7 @@ arrayOccurencePerWord=countLetterOccurencePerWord(textToDecryptBlanksSolved, alp
 letterList = setPhase2Occurences(letterList, arrayOccurenceAtStart, arrayOccurencePerWord)
 
 
-error = 1.0
+error = 1.5
 
 c=0
 for aa in letterList:
@@ -422,13 +427,12 @@ for a in letterList:
 			if letterDoubles.count(getStringFromArray(a.candidats4Hits)) == 0:
 				letterDoubles+=getStringFromArray(a.candidats4Hits)
 
-#print amountDoubles
-#print letterDoubles
+# if no doubles available we set to one, in order to got at least one array
+if amountDoubles == 0:
+	amountDoubles=1
 
 for i in range(amountDoubles):
 	allPermutations.append(tempPerm.copy()) # never forget to make a deep copy bro!!!!
-
-#print allPermutations
 
 for a in letterList:
 	x = len(a.candidats4Hits)
@@ -442,17 +446,6 @@ for a in letterList:
 					unset2=0
 				counter+=1	
 
-
-# genau jetzt die beiden varianten jeweils in den shit, und anschliessend ENDLICH rekursiv fur jeden noch leeren buchstaben,
-# wird dann geschaut wer in frage kommt, bei der zweiten stufe alle buchstaben, dann dritte, und dann vierte.
-# dadruch das wir das dann immer appenden, loschen wir am ende einfach alle nicht vollstandigen permutation aus dem array
-# und starten anschliessen die advanced brute-force attack. nach jeder attack wir in einem array gespeichert, wie viele
-# woerter aus der wordlist gefunden wurden und nachdem alle versuche durch sind, wird ausgedruckt. bzw, wenn wir drucken
-# jedes mal den text, wenn mehr worter gefunden werden an den user. so dass er den vorgang abbrechen kann.
-# deswegen werden die erfolgreichen cipher in eine textdatei abgelegt. mit dokumenten namen und cipher!
-
-#so jetzt rekursive funktion und gut ist!
-
 #now we will fill the 3 Hits
 # determining maximum chars for one letter at 3 Hits
 maxAmount3Hits=0
@@ -460,6 +453,8 @@ for a in letterList:
 	x=len(a.candidats3Hits)
 	if x > maxAmount3Hits:
 		maxAmount3Hits=x
+
+#print allPermutations
 
 for i in range(maxAmount3Hits):
 
@@ -519,6 +514,8 @@ for a in letterList:
 			for y in allPermutations:
 				y[a.letter]=x
 				a.lastCandidats=" "
+				a.actualLetter=1	# this line costed 25 minutes, because you forgot !!! :D
+
 	#print a.letter, a.lastCandidats 
 
 
@@ -550,32 +547,127 @@ def generatePermutations(permutationsArray, obj):
 
 def generatePermutations2(permutationsArray, obj):
 	
+
+	#print "generatePermutations2-Function: \n", permutationsArray
+
 	newPermutations = [[0 for xa in range(len(obj.lastCandidats))*len(permutationsArray[0])] for xa in range(len(permutationsArray))]
+
+	#print obj.lastCandidats
 
 	for x in range(len(permutationsArray)):
 		counter=0	
 
 		for z in range(len(permutationsArray[0])):
 
+			counter2=0
 			for y in range(len(obj.lastCandidats)):
 
-				newPermutations[x][counter] = permutationsArray[x][z]
+				if str(permutationsArray[x][z]).count(obj.lastCandidats[counter2]) < 2 and permutationsArray[x][z] != 0:
+					newPermutations[x][counter] = permutationsArray[x][z].copy()		# AGAIN NEVER FORGET THE COPY DUDE....self
+					newPermutations[x][counter][obj.letter]=obj.lastCandidats[counter2]
+					#print counter
+					#print newPermutations[x][counter]
+
+
 				counter+=1
+				counter2+=1
 
 			# hier jetzt noch die setFunktion rein, und dann war es das bujaka :D
+			# Hier drinnen stimmt das noch alles, aber was ich uebergebe ist shice.... maaaahh
 
 	return newPermutations
 
+#check=1
+#bla=0
+#for ab in letterList:
+#	if not ab.actualLetter:
+#		if check:
+#			print ab.letter, " FIRST ONE "
+#			bla=generatePermutations(allPermutations, ab)	
+#			check=0
+#		else:
+#			bla=generatePermutations2(bla, ab)
+#			print ab.letter
+#
+#print bla
 
-bla=generatePermutations(allPermutations, zL)
-#print bla, "\n-------------------\n"
+#search first letter which is not set
+c=0
+result=0
+for ab in letterList:
+	if not ab.actualLetter:
+		#print ab.letter
+		result=c
+		break
+	c+=1
 
-hallo=generatePermutations2(bla, yL)
+def generateRestOfPossibilities (letterList, permutations):
 
-print len(hallo)
-print len(hallo[0])
-print len(hallo[1])
-print hallo[0][34]
+	#print "start recursive"
+#	#for x in letterList:
+#	#	print x
+#
+	#print "....."
+	#print permutations
+	#"__________________________________________________________________________________________"	
+
+	counter=0
+	for ab in letterList:
+		if not ab.actualLetter:
+			counter+=1
+
+	
+	if counter > 1:
+		for ab in letterList:
+			if not ab.actualLetter:
+				ab.actualLetter=1
+				return generateRestOfPossibilities( letterList, generatePermutations2(permutations, ab) )
+	else:
+		for ab in letterList:
+			if not ab.actualLetter:
+				ab.actualLetter=1
+				return generatePermutations2(permutations, ab)		
+	
+	#ab.actualLetter=1
+			
+	#return generateRestOfPossibilities(letterList, generatePermutations2(permutations, ab))
+
+#print bla
+#print len(bla)
+#print len(bla[0])
+#print len(bla[1])#
+
+bla=generatePermutations(allPermutations, letterList[result])
+letterList[result].actualLetter=1
+
+#pprint.pprint(allPermutations)
+#print "-----"
+#print bla
+
+#hallo=generateRestOfPossibilities(letterList, bla)
+#
+#print("ffef")
+#print len(hallo)
+#print len(hallo[0])
+#print len(hallo[1])
+#
+#
+## now bruteforce the shit out of it :)
+#
+#amountCiphers=0
+#for i in range(len(hallo[0])):
+#	if hallo[0][i] != 0:
+#		print hallo[0][i]
+#		amountCiphers+=1
+#
+#for i in range(len(hallo[1])):
+#	if hallo[1][i] != 0:
+#		print hallo[1][i]
+#		amountCiphers+=1
+#
+#print amountCiphers
+#print len(hallo[0])+len(hallo[1])
+
 
 
 # check for all chars
