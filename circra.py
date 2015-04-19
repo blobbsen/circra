@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import random
+import pprint
 
 class letter(object):
 	letter = ""
@@ -20,7 +21,8 @@ class letter(object):
     # The class "constructor" - It's actually an initializer ##read more about this 
 	def __init__(self, letter, occurenceAtAll, occurenceTwice):
 		self.letter = letter
-		self.actualLetter = ""
+		self.decipherLetter= ""
+		self.actualLetter = 0
 		self.occurenceAtAll = occurenceAtAll
 		self.occurenceTwice = occurenceTwice
 
@@ -37,6 +39,8 @@ class letter(object):
 		self.candidats2Hits = []
 		self.candidats1Hit = []
 
+		self.lastCandidats=""
+
     # method to get the type of object  does NOT seem to work
 	def __repr__(self):
 		print "test"
@@ -45,6 +49,9 @@ class letter(object):
     # method like java print object
 	def __str__(self):
 		return "letter: %s, occurenceAtAll: %f, occurence twice: %f, occurencePerWord: %f, occurenceAtStart: %f" % (self.letter, self.occurenceAtAll, self.occurenceTwice, self.occurencePerWord, self.occurenceAtStart) 
+
+	def setLastCandidats(self, string):
+		self.lastCandidats = string
 
 	# calculates the same stuff a lot of time, but it works TO DO: make it better :)	
 	def createCandidates(self, alphabet):
@@ -90,6 +97,9 @@ class letter(object):
 def parseTextFileToString( file ):
 	with open (file, "r") as myfile:
     		return (myfile.read().replace('\n', '')).lower()
+
+def getStringFromArray( array ):
+	return str(array).replace("[","").replace(",","").replace(" ","").replace("'","").replace("]","")
 
 def encryptTextRandomly( text, alphabet ):
 	key=alphabet[:]
@@ -259,43 +269,43 @@ occurenceAtAll=countLetterOccurenceAtAll(textToDecrypt ,alphabet)
 occurenceTwice=countLetterOccurenceTwice(textToDecrypt, alphabet)
 
 # creating objects 
-a = letter("a",occurenceAtAll[0], occurenceTwice[0])
-b = letter("b",occurenceAtAll[1], occurenceTwice[1])
-c = letter("c",occurenceAtAll[2], occurenceTwice[2])
-d = letter("d",occurenceAtAll[3], occurenceTwice[3])
-e = letter("e",occurenceAtAll[4], occurenceTwice[4])
-f = letter("f",occurenceAtAll[5], occurenceTwice[5])
-g = letter("g",occurenceAtAll[6], occurenceTwice[6])
-h = letter("h",occurenceAtAll[7], occurenceTwice[7])
-i = letter("i",occurenceAtAll[8], occurenceTwice[8])
-j = letter("j",occurenceAtAll[9], occurenceTwice[9])
-k = letter("k",occurenceAtAll[0], occurenceTwice[10])
-l = letter("l",occurenceAtAll[11], occurenceTwice[11])
-m = letter("m",occurenceAtAll[12], occurenceTwice[12])
-n = letter("n",occurenceAtAll[13], occurenceTwice[13])
-o = letter("o",occurenceAtAll[14], occurenceTwice[14])
-p = letter("p",occurenceAtAll[15], occurenceTwice[15])
-q = letter("q",occurenceAtAll[16], occurenceTwice[16])
-r = letter("r",occurenceAtAll[17], occurenceTwice[17])
-s = letter("s",occurenceAtAll[18], occurenceTwice[18])
-t = letter("t",occurenceAtAll[19], occurenceTwice[19])
-u = letter("u",occurenceAtAll[20], occurenceTwice[20])
-v = letter("v",occurenceAtAll[21], occurenceTwice[21])
-w = letter("w",occurenceAtAll[22], occurenceTwice[22])
-x = letter("x",occurenceAtAll[23], occurenceTwice[23])
-y = letter("y",occurenceAtAll[24], occurenceTwice[24])
-z = letter("z",occurenceAtAll[25], occurenceTwice[25])
+aL = letter("a",occurenceAtAll[0], occurenceTwice[0])
+bL = letter("b",occurenceAtAll[1], occurenceTwice[1])
+cL = letter("c",occurenceAtAll[2], occurenceTwice[2])
+dL = letter("d",occurenceAtAll[3], occurenceTwice[3])
+eL = letter("e",occurenceAtAll[4], occurenceTwice[4])
+fL = letter("f",occurenceAtAll[5], occurenceTwice[5])
+gL = letter("g",occurenceAtAll[6], occurenceTwice[6])
+hL = letter("h",occurenceAtAll[7], occurenceTwice[7])
+iL = letter("i",occurenceAtAll[8], occurenceTwice[8])
+jL = letter("j",occurenceAtAll[9], occurenceTwice[9])
+kL = letter("k",occurenceAtAll[0], occurenceTwice[10])
+lL = letter("l",occurenceAtAll[11], occurenceTwice[11])
+mL = letter("m",occurenceAtAll[12], occurenceTwice[12])
+nL = letter("n",occurenceAtAll[13], occurenceTwice[13])
+oL = letter("o",occurenceAtAll[14], occurenceTwice[14])
+pL = letter("p",occurenceAtAll[15], occurenceTwice[15])
+qL = letter("q",occurenceAtAll[16], occurenceTwice[16])
+rL = letter("r",occurenceAtAll[17], occurenceTwice[17])
+sL = letter("s",occurenceAtAll[18], occurenceTwice[18])
+tL = letter("t",occurenceAtAll[19], occurenceTwice[19])
+uL = letter("u",occurenceAtAll[20], occurenceTwice[20])
+vL = letter("v",occurenceAtAll[21], occurenceTwice[21])
+wL = letter("w",occurenceAtAll[22], occurenceTwice[22])
+xL = letter("x",occurenceAtAll[23], occurenceTwice[23])
+yL = letter("y",occurenceAtAll[24], occurenceTwice[24])
+zL = letter("z",occurenceAtAll[25], occurenceTwice[25])
 blank = letter(" ",occurenceAtAll[26], occurenceTwice[26])
 
 # creating list
-letterList=[a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,blank]
+letterList=[aL,bL,cL,dL,eL,fL,gL,hL,iL,jL,kL,lL,mL,nL,oL,pL,qL,rL,sL,tL,uL,vL,wL,xL,yL,zL,blank]
 
 # determine blank and setting it
 blank=searchBlank(letterList)
 
 for x in letterList:
 	if x.letter == blank:
-		x.actualLetter = " "
+		x.actualLetter = 1
 #### probably some checks here, cuz the "e" could fuck shit up.
 
 # create decrypted text with real blanks
@@ -362,7 +372,7 @@ for x in letterList:
 
 #buildPermutationsFor4Hits(letterList, alphabet)
 
-AllPermutations=[]
+allPermutations=[]
 	
 OnePermutation={'a':'','b':'','c':'','d':'','e':'','f':'','g':'','h':'','i':'',
 					'j':'','k':'','l':'','m':'','n':'','o':'','p':'','q':'','r':'',
@@ -386,21 +396,51 @@ for a in letterList:
 			#print tempCheck.count(a.letter)
 			#print tempCheck
 
+# resetting double chars
 for a in alphabet:
 	if gettingDoubles.count(a) > 0:
 		for b in alphabet:
 			if tempPerm.get(b) == a:
 				tempPerm[b] = ""
 
-#AllPermutations.append(tempPerm)
+#print gettingDoubles
+#print tempPerm
+
+#allPermutations.append(tempPerm) FOR ALL DOUBLEHITS 4 
 #####################################################################
 
 # now the we iterate over the letters which have two letters at 4hits very unique!!!  ## here the c and m fuck shit up
 # and copy the tempPerm for each occurence
+
+amountDoubles=0
+letterDoubles=""
 for a in letterList:
-		if len(a.candidats4Hits) > 1:
-			print a.letter, a.candidats4Hits
-			x = tempPerm.copy()
+		if len(a.candidats4Hits) == 2:
+			amountDoubles+=1
+			#print getStringFromArray(a.candidats4Hits)
+			#print letterDoubles.count(str(a.candidats4Hits))
+			if letterDoubles.count(getStringFromArray(a.candidats4Hits)) == 0:
+				letterDoubles+=getStringFromArray(a.candidats4Hits)
+
+#print amountDoubles
+#print letterDoubles
+
+for i in range(amountDoubles):
+	allPermutations.append(tempPerm.copy()) # never forget to make a deep copy bro!!!!
+
+#print allPermutations
+
+for a in letterList:
+	x = len(a.candidats4Hits)
+	if x == 2:
+		for i in range(x):
+			unset2=1
+			counter=0
+			while unset2:
+				if getStringFromArray(allPermutations[counter]).count(a.candidats4Hits[i]) == 1 and allPermutations[counter][a.letter] == "":
+					allPermutations[counter][a.letter]=a.candidats4Hits[i]	
+					unset2=0
+				counter+=1	
 
 
 # genau jetzt die beiden varianten jeweils in den shit, und anschliessend ENDLICH rekursiv fur jeden noch leeren buchstaben,
@@ -411,10 +451,75 @@ for a in letterList:
 # jedes mal den text, wenn mehr worter gefunden werden an den user. so dass er den vorgang abbrechen kann.
 # deswegen werden die erfolgreichen cipher in eine textdatei abgelegt. mit dokumenten namen und cipher!
 
-#for a in letterList
+#so jetzt rekursive funktion und gut ist!
+
+#now we will fill the 3 Hits
+# determining maximum chars for one letter at 3 Hits
+maxAmount3Hits=0
+for a in letterList:
+	x=len(a.candidats3Hits)
+	if x > maxAmount3Hits:
+		maxAmount3Hits=x
+
+for i in range(maxAmount3Hits):
+
+	i+=1
+	if i == 1:
+		## first setting only the one candidats
+		amountLetters3HC=0
+		letters3HC=""
+
+		for a in letterList:
+			if len(a.candidats3Hits) == 1 and allPermutations[0][a.letter] == "": 
+				amountLetters3HC+=1
+				letters3HC+=a.candidats3Hits[0]
+		
+		counter=0
+		for x in allPermutations:
+			for a in letterList:
+				if len(a.candidats3Hits) == 1 and allPermutations[counter][a.letter] == "" and letters3HC.count(a.candidats3Hits[0]) == 1:
+					x[a.letter]=a.candidats3Hits[0] 
+			counter+=1
+
+		# now the doubles NOPE !!!
+		# no now we set all actualLetter, and afterwards we iterate over each letter and if this is not already set, all the number 4 candidats, 
+		# afterwards we got all permutations
 
 
+for a in letterList:
+	if allPermutations[0][a.letter] != "":
+		a.actualLetter=1
 
+## getting alreadySetChars
+alreadySetChars=""
+for a in letterList:
+	if allPermutations[0][a.letter] != "":
+		alreadySetChars+=allPermutations[0][a.letter]
+
+#print alreadySetChars
+
+for a in letterList:
+	if not a.actualLetter:
+		temp=getStringFromArray(a.candidats4Hits) + getStringFromArray(a.candidats3Hits) + getStringFromArray(a.candidats2Hits) + getStringFromArray(a.candidats1Hit )
+
+		for x in alreadySetChars:
+			temp=temp.replace(x, "")
+
+		a.setLastCandidats(temp)
+
+## concatenating all lastCandidats to determine if one char occures only one, that one is for sure right.
+allLastCandidats=""
+for a in letterList:
+	allLastCandidats+=a.lastCandidats
+
+for a in letterList:
+	for x in a.lastCandidats:
+		if allLastCandidats.count(x)==1:
+			#print a.letter, x, a.lastCandidats
+			for y in allPermutations:
+				y[a.letter]=x
+				a.lastCandidats=" "
+	#print a.letter, a.lastCandidats 
 
 
 # until now everything works pretty well, but i could improve the blank check, because for 5 % or so ;) it's determines the e instead of the blank.
@@ -422,3 +527,80 @@ for a in letterList:
 
 # now the big check, where every letter will be evaluated by it statistics. so we will pass the letterList to a function.
 # which will set all it's candidats.
+
+
+# so jetzt wirklich nur noch alle permutationen erstellen und advance brute forcen und anschliessend mit woerter buch abgleichen.
+# alternativ koennte man hier einen switch einbauen, der direkt zu decrypted und per autocorrect function die restlichen cipher findet.
+
+
+## now we will iterate over each character which will take all permuations and multiply each of them with there candidats amount and fill them.
+## in the end we delete empty permutations in fact of already set letters. (describe more!)
+
+
+def generatePermutations(permutationsArray, obj):
+	
+	newPermutations = [[0 for xa in range(len(obj.lastCandidats))] for xa in range(len(permutationsArray))]
+	
+	for xa in range(len(permutationsArray)):
+		for ya in range(len(obj.lastCandidats)):
+			newPermutations[xa][ya] =  permutationsArray[xa].copy()
+			newPermutations[xa][ya][obj.letter]=obj.lastCandidats[ya]
+
+	return newPermutations
+
+def generatePermutations2(permutationsArray, obj):
+	
+	newPermutations = [[0 for xa in range(len(obj.lastCandidats))*len(permutationsArray[0])] for xa in range(len(permutationsArray))]
+
+	for x in range(len(permutationsArray)):
+		counter=0	
+
+		for z in range(len(permutationsArray[0])):
+
+			for y in range(len(obj.lastCandidats)):
+
+				newPermutations[x][counter] = permutationsArray[x][z]
+				counter+=1
+
+			# hier jetzt noch die setFunktion rein, und dann war es das bujaka :D
+
+	return newPermutations
+
+
+bla=generatePermutations(allPermutations, zL)
+#print bla, "\n-------------------\n"
+
+hallo=generatePermutations2(bla, yL)
+
+print len(hallo)
+print len(hallo[0])
+print len(hallo[1])
+print hallo[0][34]
+
+
+# check for all chars
+#print aL
+#print bL
+#print cL
+#print dL
+#print eL
+#print fL
+#print gL
+#print hL
+#print iL
+#print jL
+#print kL
+#print lL
+#print mL
+#print oL
+#print pL
+#print qL
+#print rL
+#print sL
+#print tL
+#print uL
+#print vL
+#print wL
+#print xL
+#print yL
+#print zL
